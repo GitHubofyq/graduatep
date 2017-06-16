@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+    <constant name="struts.devMode" value="false" />
+    <constant name="struts.i18n.encoding" value="UTF-8"/>
+    <package name="eShop" extends="struts-default" namespace="/">
+    
+    	<!-- 自定义拦截器-拦截后台访问权限 -->
+    	<interceptors>
+    		<interceptor name="adminInterceptor" class="com.eShop.admin.interceptor.AdminInterceptor"></interceptor>
+    	</interceptors>
+    
+    	<global-results>
+			<result name="message">/WEB-INF/jsp/message.jsp</result>
+			<result name="login">/WEB-INF/jsp/login.jsp</result>
+			<result name="loginFail">/admin/index.jsp</result>
+		</global-results>
+    
+    	<!--配置访问首页 的 Action  -->
+    	<action name="index" class="indexAction">
+    		<result name="index">/WEB-INF/jsp/index.jsp</result>
+    	</action>
+    	
+    	<!--配置用户模块的action -->
+    	<action name="user_*" class="userAction" method="{1}">
+    		<result name="registPage">/WEB-INF/jsp/register.jsp</result>
+    		<result name="input">/WEB-INF/jsp/register.jsp</result>
+    		<result name="loginPage">/WEB-INF/jsp/login.jsp</result>
+    		<result name="loginSuccess" type="redirectAction">index</result>
+    		<result name="quit" type="redirectAction">index</result>
+    		<result name="captchaFail">/WEB-INF/jsp/register.jsp</result>
+    	</action>
+    	
+    	<!-- 验证码Action -->
+		<action name="captcha" class="captchaAction">
+		
+		</action>
+		
+		<!-- product Action -->
+		<action name="product_*" class="productAction" method="{1}">
+			<result name="findByPid">/WEB-INF/jsp/product.jsp</result>
+			<result name="findByCid">/WEB-INF/jsp/productcList.jsp</result>
+			<result name="findByCsid">/WEB-INF/jsp/productcList.jsp</result>
+		</action>
+		
+		<!-- 购物车Action -->
+		<action name="cart_*" class="cartAction" method="{1}">
+			<result name="addCart">/WEB-INF/jsp/cart.jsp</result>
+			<result name="clearCart">/WEB-INF/jsp/cart.jsp</result>
+			<result name="removeCart">/WEB-INF/jsp/cart.jsp</result>
+			<result name="myCart">/WEB-INF/jsp/cart.jsp</result>
+		</action>
+		
+		<!-- 订单模块的Action -->
+		<action name="order_*" class="orderAction" method="{1}">
+			<result name="submitOrder">/WEB-INF/jsp/order.jsp</result>
+			<result name="findByUid">/WEB-INF/jsp/orderList.jsp</result>
+			<result name="findByOid">/WEB-INF/jsp/order.jsp</result>
+			<result name="updateState" type="redirectAction">order_findByUid.action?page=1</result>
+		</action>
+		
+		<!--  ============================admin=============================  -->
+		<!-- 后台管理员登录的 Action -->
+		<action name="admin_*" class="adminAction" method="{1}">
+			<result name="loginSuccess" type="redirect">/admin/home.jsp</result>
+			<result name="loginFail">/admin/index.jsp</result>
+		</action>
+		
+		<!-- 后台  一级分类管理  的 adminCategoryAction -->
+		<action name="adminCategory_*" class="adminCategoryAction" method="{1}">
+			<result name="findAll">/admin/category/list.jsp</result>
+			<!-- 保存一级分类后不直接跳转回一级分类页面，而是重定向到AdminCategoryAction类重新查询数据库回显给页面 -->
+			<result name="save" type="redirectAction">adminCategory_findAll.action</result>
+			<result name="delete" type="redirectAction">adminCategory_findAll.action</result>
+			<result name="edit">/admin/category/edit.jsp</result>
+			<result name="update" type="redirectAction">adminCategory_findAll.action</result>
+			<interceptor-ref name="adminInterceptor"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+    	
+    	<!-- 后台  二级分类管理 Action -->
+    	<action name="adminSubCategory_*" class="adminSubCategoryAction" method="{1}">
+    		<result name="findAll">/admin/subCategory/list.jsp</result>
+    		<result name="addPage">/admin/subCategory/add.jsp</result>
+    		<result name="save" type="redirectAction">adminSubCategory_findAll.action?page=1</result>
+    		<result name="delete" type="redirectAction">adminSubCategory_findAll.action?page=1</result>
+    		<result name="edit">/admin/subCategory/edit.jsp</result>
+    		<result name="update" type="redirectAction">adminSubCategory_findAll.action?page=1</result>
+    		<interceptor-ref name="adminInterceptor"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+    	</action>
+    	
+    	<!-- 配置后台商品管理的Action -->
+    	<action name="adminProduct_*" class="adminProductAction" method="{1}">
+    		<result name="findAll">/admin/product/list.jsp</result>
+    		<result name="addPage">/admin/product/add.jsp</result>
+    		<result name="save" type="redirectAction">adminProduct_findAll.action?page=1</result>
+    		<result name="delete" type="redirectAction">adminProduct_findAll.action?page=1</result>
+    		<result name="edit">/admin/product/edit.jsp</result>
+    		<result name="update" type="redirectAction">adminProduct_findAll.action?page=1</result>
+    		<interceptor-ref name="adminInterceptor"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+    	</action> 
+    	
+    	<!-- 配置后台订单管理的action -->
+    	<action name="adminOrder_*" class="adminOrderAction" method="{1}">
+    		<result name="findAll">/admin/order/list.jsp</result>
+    		<result name="showOrderItem">/admin/order/orderItem.jsp</result>
+    		<result name="updateState" type="redirectAction">adminOrder_findAll.action?page=1</result>
+    		<interceptor-ref name="adminInterceptor"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+    	</action>
+    	
+    	<!-- 后台用户管理 -->
+    	<action name="adminUser_*" class="adminUserAction" method="{1}">
+    		<result name="findUser">/admin/user/list.jsp</result>
+    	</action>
+    	
+    </package>
+
+</struts>

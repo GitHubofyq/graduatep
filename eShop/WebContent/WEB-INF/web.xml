@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+	id="WebApp_ID" version="3.0">
+  <display-name>eShop</display-name>
+  
+  <!-- spring 核心监听器  class:spring-web-3.2.0.RELESASE.jar-->
+  <listener>
+  	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+  <!-- 全局初始化参数 -->
+  <context-param>
+  	<param-name>contextConfigLocation</param-name>
+  	<param-value>classpath:applicationContext.xml</param-value>
+  </context-param>
+  
+  <!-- 加载Struts2 核心过滤器-->
+  <!-- 配置 Struts2 的 Filter class:struts2-core-2.3.15.3.jar-->
+  <filter>
+  	<filter-name>Struts2</filter-name>
+  	<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>Struts2</filter-name>
+  	<url-pattern>/*</url-pattern>
+  	<dispatcher>REQUEST</dispatcher>
+  	<dispatcher>FORWARD</dispatcher>
+  </filter-mapping>
+  
+</web-app>

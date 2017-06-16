@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2017-4-22 12:04:41 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.eShop.category.entities.Category" table="CATEGORY">
+        <id name="cid" type="java.lang.Integer">
+            <column name="CID" />
+            <generator class="native" />
+        </id>
+        
+        <property name="cname" type="java.lang.String">
+            <column name="CNAME" />
+        </property>
+        
+        <!-- 配置categorysecond的集合 关联关系category:categorysecond == 1:n -->
+        <set order-by="csid" cascade="delete" name="categorySeconds" table="CATEGORYSECOND" lazy="false">
+            <key>
+                <column name="CID" />
+            </key>
+            <one-to-many class="com.eShop.categorysecond.entities.CategorySecond" />
+        </set>
+    </class>
+</hibernate-mapping>

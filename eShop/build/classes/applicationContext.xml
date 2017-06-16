@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+	
+	<!-- 配置连接池: -->
+	<!-- 引入外部属性文件 -->
+	<context:property-placeholder location="classpath:db.properties"/>
+	
+	<!-- 配置c3p0连接池 :class:c3p0-0.9.1.jar-->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driver}"/>
+		<property name="jdbcUrl" value="${jdbc.url}?characterEncoding=UTF-8"/>
+		<property name="user" value="${jdbc.user}"/>
+		<property name="password" value="${jdbc.password}"/>
+	</bean>
+	
+	<!-- 事务管理;配置Hibernate相关 class:spring-orm-3.2.0.RELEASE.jar-->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<!-- 1.注入连接池 -->
+		<property name="dataSource" ref="dataSource"/>
+		
+		<!-- 2.hibernate 的基本属性相当于 hibernate.cfg.xml -->
+		<property name="hibernateProperties">
+			<props>	<!-- class:hibernate3.jar -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.connection.autocommit">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<!-- 配置 hibernate 映射文件 映射实体类  -->
+		<property name="mappingResources">
+			<list>
+				<value>/com/eShop/user/entities/User.hbm.xml</value>
+				<value>com/eShop/category/entities/Category.hbm.xml</value>
+				<value>/com/eShop/product/entities/Product.hbm.xml</value>
+				<value>/com/eShop/categorysecond/entities/CategorySecond.hbm.xml</value>
+				<value>/com/eShop/order/vo/Order.hbm.xml</value>
+				<value>/com/eShop/order/vo/OrderItem.hbm.xml</value>
+				<value>/com/eShop/admin/vo/Admin.hbm.xml</value>
+			</list>
+		</property>
+		
+	</bean>
+	
+	<!-- 配置注解的事务管理 -->
+	<!-- 1.配置事务管理器 class:class:spring-orm-3.2.0.RELEASE.jar -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- 2.启动注解事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	
+	<!-- ************************** bean配置 ************************************  -->
+	
+	<!-- 首页模块的 Action 对象************ -->
+	<bean id="indexAction" class="com.eShop.index.action.IndexAction" scope="prototype">
+		<property name="categoryService" ref="categoryService"/>
+		<property name="productService" ref="productService"></property>
+	</bean>
+	
+	<!-- ==================== User模块的 Action Service Dao 等对象 ========================== -->
+	
+	<!-- 验证码的 Action 对象*********** -->
+	<bean id="captchaAction" class="com.eShop.user.action.CaptchaAction" scope="prototype">
+	</bean>
+	
+	<!-- 用户相关访问的对象*************** -->
+	<bean id="userAction" class="com.eShop.user.action.UserAction" scope="prototype">
+		<property name="userService" ref="userService"></property>
+	</bean>
+	
+	<!-- 用户的业务对象****************** -->
+	<bean id="userService" class="com.eShop.user.service.UserService" >
+		<property name="userDao" ref="userDao"></property>
+	</bean>
+	
+	<!-- 用户访问数据的对象**************** -->
+	<bean id="userDao" class="com.eShop.user.dao.UserDao" >
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- ==================一级分类模块的 Action Service Dao 等对象================================ -->
+	
+	<!-- 一级分类模块的ACtion对象********* -->
+	<!-- <bean id="categoryAction" class="com.eShop.category.action.CategoryAction" scope="prototype">
+		<property name="categoryService" ref="categoryService"></property>
+	</bean> -->
+	
+	<!-- 一级分类模块的Service对象********* -->
+	<bean id="categoryService" class="com.eShop.category.service.CategoryService" >
+		<property name="categoryDao" ref="categoryDao"></property>
+	</bean>
+	
+	<!-- 一级分类模块的Dao对象************* -->
+	<bean id="categoryDao" class="com.eShop.category.dao.CategoryDao" >
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- ================== 商品模块的 Action Service Dao 等对象================================ -->
+	<!-- 商品模块的的 A S D -->
+	
+	<bean id="productAction" class="com.eShop.product.action.ProductAction" scope="prototype">
+		<property name="productService" ref="productService"></property>
+	</bean>
+	
+	<bean id="productService" class="com.eShop.product.service.ProductService">
+		<property name="productDao" ref="productDao"></property>
+	</bean>
+	
+	<bean id="productDao" class="com.eShop.product.dao.ProductDao">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- ================== 购物车-模块的 Action Service Dao 等对象================================ -->
+	<!-- 购物车模块的 A S D -->
+	<bean id="cartAction" class="com.eShop.cart.action.CartAction" scope="prototype">
+		<property name="productService" ref="productService"></property>
+	</bean>
+	
+	<!-- ================== 订单-模块的 Action Service Dao 等对象================================ -->
+	<bean id="orderAction" class="com.eShop.order.action.OrderAction" scope="prototype">
+		<property name="orderService" ref="orderService"></property>
+	</bean>
+	
+	<bean id="orderService" class="com.eShop.order.service.OrderService">
+		<property name="orderDao" ref="orderDao"></property>
+	</bean>
+	
+	<bean id="orderDao" class="com.eShop.order.dao.OrderDao">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- ================== 后台管理员用户 admin 的 Action Service Dao 等对象================================ -->
+	
+	<!-- 后台管理员用户的 A S D -->
+	<bean id="adminAction" class="com.eShop.admin.action.AdminAction" scope="prototype">
+		<property name="adminService" ref="adminService"></property>
+	</bean>
+	
+	<bean id="adminService" class="com.eShop.admin.service.AdminService">
+		<property name="adminDao" ref="adminDao"></property>
+	</bean>
+	
+	<bean id="adminDao" class="com.eShop.admin.dao.AdminDao">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- 后台管理一级分类管理的 A S D -->
+	<bean id="adminCategoryAction" class="com.eShop.category.admin_action.AdminCategoryAction" scope="prototype">
+		<property name="categoryService" ref="categoryService"></property>
+	</bean>
+	
+	<!-- 后台二级分类管理的 A S D ***在前台模块并未配置***  -->
+	<bean id="adminSubCategoryAction" class="com.eShop.categorysecond.admin_action.AdminSubCategoryAction" scope="prototype">
+		<property name="categorySecondService" ref="categorySecondService"></property>
+		<property name="categoryService" ref="categoryService"/>
+	</bean>
+	
+	<bean id="categorySecondService" class="com.eShop.categorysecond.service.CategorySecondService">
+		<property name="categorySecondDao" ref="categorySecondDao"></property>
+	</bean>
+	
+	<bean id="categorySecondDao" class="com.eShop.categorysecond.dao.CategorySecondDao">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- 后台商品管理的 action -->
+	<bean id="adminProductAction" class="com.eShop.product.admin_action.AdminProductAction" scope="prototype">
+		<property name="productService" ref="productService"></property>
+		<property name="categorySecondService" ref="categorySecondService"></property>
+	</bean>
+	
+	<!-- 后台订单管理action -->
+	<bean id="adminOrderAction" class="com.eShop.order.admin_action.AdminOrderAction" scope="prototype">
+		<property name="orderService" ref="orderService"></property>
+	</bean>
+	
+	<!-- 后台用户管理 -->
+	<bean id="adminUserAction" class="com.eShop.user.admin_action.AdminUserAction" scope="prototype">
+		<property name="userService" ref="userService"></property>
+	</bean>
+</beans>

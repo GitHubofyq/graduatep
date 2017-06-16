@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2017-4-22 12:04:41 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.eShop.categorysecond.entities.CategorySecond" table="CATEGORYSECOND">
+        <id name="csid" type="java.lang.Integer">
+            <column name="CSID" />
+            <generator class="native" />
+        </id>
+        <property name="csname" type="java.lang.String">
+            <column name="CSNAME" />
+        </property>
+        
+        <!-- 关联关系:CategorySecond:Category == n:1 -->
+        <many-to-one name="category" class="com.eShop.category.entities.Category" column="cid" >
+           
+        </many-to-one>
+        
+        <!-- 配置 PRODUCT的集合；n:1-->
+        <set name="products" table="PRODUCT" inverse="true" lazy="false" >
+            <key>
+                <column name="CSID" />
+            </key>
+            <one-to-many class="com.eShop.product.entities.Product" />
+        </set>
+    </class>
+</hibernate-mapping>

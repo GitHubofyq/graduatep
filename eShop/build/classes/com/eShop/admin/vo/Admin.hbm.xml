@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2017-4-24 13:04:04 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.eShop.admin.vo.Admin" table="ADMIN">
+        <id name="aid" type="java.lang.Integer">
+            <column name="AID" />
+            <generator class="native" />
+        </id>
+        <property name="adminname" type="java.lang.String">
+            <column name="ADMINNAME" />
+        </property>
+        <property name="password" type="java.lang.String">
+            <column name="PASSWORD" />
+        </property>
+    </class>
+</hibernate-mapping>

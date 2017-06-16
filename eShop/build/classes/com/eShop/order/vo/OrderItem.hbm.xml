@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2017-4-22 12:04:41 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.eShop.order.vo.OrderItem" table="ORDERITEM">
+        <id name="itemid" type="java.lang.Integer">
+            <column name="ITEMID" />
+            <generator class="native" />
+        </id>
+        <property name="count" type="java.lang.Integer">
+            <column name="COUNT" />
+        </property>
+        <property name="subtotal" type="java.lang.Double">
+            <column name="SUBTOTAL" />
+        </property>
+        
+        <!-- 关联关系 orderitem:product == n:1 -->
+        <many-to-one name="product" lazy="false" class="com.eShop.product.entities.Product" 
+        	column="pid">
+            
+        </many-to-one>
+        
+        <!-- 关联关系: orderitem:order == n:1 -->
+        <many-to-one name="order" lazy="false" class="com.eShop.order.vo.Order" column="oid">
+           
+        </many-to-one>
+    </class>
+</hibernate-mapping>
